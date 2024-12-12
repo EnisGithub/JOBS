@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask App mit Konsole</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #1e1e1e;
+            color: #f1f1f1;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 20px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #console {
+            margin: 20px;
+            padding: 20px;
+            background-color: #000;
+            color: #0f0;
+            font-family: monospace;
+            height: 400px;
+            overflow-y: scroll;
+            border: 1px solid #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Flask App mit Konsole</h1>
+    <button onclick="runScript()">Python-Skript ausführen</button>
+    <div id="console"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.0/socket.io.min.js"></script>
+    <script>
+        const socket = io();
+        const consoleDiv = document.getElementById("console");
+
+        // Logs von der Server-Konsole empfangen
+        socket.on("console_log", (data) => {
+            const logEntry = document.createElement("div");
+            logEntry.textContent = data.message;
+            consoleDiv.appendChild(logEntry);
+            consoleDiv.scrollTop = consoleDiv.scrollHeight;  // Automatisch nach unten scrollen
+        });
+
+        // Python-Skript starten
+        async function runScript() {
+            const response = await fetch("/run-script", { method: "POST" });
+            const data = await response.json();
+            alert(data.message);
+        }
+    </script>
+</body>
+</html>
